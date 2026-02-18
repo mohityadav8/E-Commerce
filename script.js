@@ -467,3 +467,450 @@ card.appendChild(tag);
 });
 
 console.log("🚀 Extra features loaded successfully!");
+
+// =======================================================
+// 🧠 ADVANCED ECOMMERCE LOGIC (ADD BELOW EVERYTHING)
+// =======================================================
+
+// =============================
+// BACK TO TOP BUTTON
+// =============================
+const topBtn = document.createElement("button");
+topBtn.innerText = "↑";
+topBtn.style.cssText = `position:fixed;
+bottom:20px;
+right:20px;
+padding:12px 15px;
+border:none;
+border-radius:50%;
+background:#088178;
+color:white;
+font-size:18px;
+display:none;
+z-index:9999;`;
+document.body.appendChild(topBtn);
+
+window.addEventListener("scroll",()=>{
+topBtn.style.display = window.scrollY > 400 ? "block" : "none";
+});
+topBtn.onclick = ()=> window.scrollTo({top:0,behavior:"smooth"});
+
+// =============================
+// SAVE SCROLL POSITION
+// =============================
+window.addEventListener("beforeunload",()=>{
+localStorage.setItem("scrollPos",window.scrollY);
+});
+window.addEventListener("load",()=>{
+const pos = localStorage.getItem("scrollPos");
+if(pos) window.scrollTo(0,pos);
+});
+
+// =============================
+// IMAGE HOVER ZOOM
+// =============================
+document.querySelectorAll(".pro img").forEach(img=>{
+img.style.transition="0.3s";
+img.addEventListener("mousemove",(e)=>{
+img.style.transform="scale(1.2)";
+});
+img.addEventListener("mouseleave",()=>{
+img.style.transform="scale(1)";
+});
+});
+
+// =============================
+// QUANTITY BUTTONS (ON PRODUCT CLICK)
+// =============================
+document.querySelectorAll(".pro").forEach(card=>{
+const qtyBox = document.createElement("div");
+qtyBox.style.marginTop="8px";
+
+const minus=document.createElement("button");
+const plus=document.createElement("button");
+const count=document.createElement("span");
+
+minus.innerText="-";
+plus.innerText="+";
+count.innerText="1";
+
+[minus,plus].forEach(b=>{
+b.style.margin="5px";
+b.style.padding="3px 8px";
+});
+
+minus.onclick=()=>{ if(count.innerText>1) count.innerText--; };
+plus.onclick=()=>{ count.innerText++; };
+
+qtyBox.append(minus,count,plus);
+card.appendChild(qtyBox);
+});
+
+// =============================
+// COMPARE PRODUCTS
+// =============================
+let compare=[];
+
+document.querySelectorAll(".pro").forEach(card=>{
+const btn=document.createElement("button");
+btn.innerText="Compare";
+btn.style.marginTop="6px";
+card.appendChild(btn);
+
+btn.onclick=(e)=>{
+e.stopPropagation();
+const name=card.querySelector("h5").innerText;
+
+```
+if(compare.includes(name)){
+  compare=compare.filter(p=>p!==name);
+  showToast("Removed from Compare");
+}else{
+  if(compare.length>=3) return showToast("Max 3 items");
+  compare.push(name);
+  showToast("Added to Compare");
+}
+```
+
+};
+});
+
+// =============================
+// RECENTLY VIEWED SECTION UI
+// =============================
+const viewedBox=document.createElement("div");
+viewedBox.style.cssText="padding:40px;background:#f5f5f5";
+viewedBox.innerHTML="<h2>Recently Viewed</h2><div id='recent'></div>";
+document.body.appendChild(viewedBox);
+
+function renderViewed(){
+const rec=document.getElementById("recent");
+if(!rec) return;
+rec.innerHTML="";
+viewed.forEach(v=>{
+const p=document.createElement("p");
+p.innerText=v;
+rec.appendChild(p);
+});
+}
+renderViewed();
+
+// =============================
+// FAKE PAYMENT MODAL
+// =============================
+window.openPayment=function(){
+const modal=document.createElement("div");
+modal.style.cssText=`
+  position:fixed;inset:0;background:rgba(0,0,0,.7);
+  display:flex;align-items:center;justify-content:center;z-index:9999`;
+
+const box=document.createElement("div");
+box.style.cssText="background:white;padding:20px;border-radius:10px;text-align:center";
+
+box.innerHTML=`
+
+  <h2>Secure Payment</h2>
+  <input placeholder="Card Number"><br><br>
+  <input placeholder="MM/YY"><br><br>
+  <input placeholder="CVV"><br><br>
+  <button id="payNow">Pay Now</button>
+  `;
+
+modal.appendChild(box);
+document.body.appendChild(modal);
+
+document.getElementById("payNow").onclick=()=>{
+modal.remove();
+showToast("Payment Successful 🎉");
+};
+
+modal.onclick=e=>{if(e.target===modal)modal.remove();}
+};
+
+// =============================
+// LAZY IMAGE LOADING (PERFORMANCE)
+// =============================
+const lazyImgs=document.querySelectorAll("img");
+
+const lazyObserver=new IntersectionObserver((entries)=>{
+entries.forEach(entry=>{
+if(entry.isIntersecting){
+const img=entry.target;
+img.src=img.src;
+lazyObserver.unobserve(img);
+}
+});
+});
+
+lazyImgs.forEach(img=>lazyObserver.observe(img));
+
+console.log("🧠 Advanced ecommerce features loaded!");
+// =======================================================
+// 🚀 ULTRA FINAL ECOMMERCE ENGINE
+// =======================================================
+
+
+// =============================
+// CART DRAWER SYSTEM
+// =============================
+const cartDrawer = document.createElement("div");
+cartDrawer.style.cssText = `
+position:fixed;
+top:0;
+right:-400px;
+width:350px;
+height:100vh;
+background:white;
+box-shadow:-5px 0 20px rgba(0,0,0,.2);
+padding:20px;
+overflow-y:auto;
+transition:0.4s;
+z-index:99999;
+`;
+document.body.appendChild(cartDrawer);
+
+function renderCartDrawer() {
+  cartDrawer.innerHTML = "<h2>Your Cart</h2>";
+  
+  if(cart.length === 0){
+    cartDrawer.innerHTML += "<p>Cart is Empty</p>";
+    return;
+  }
+
+  let subtotal = 0;
+
+  cart.forEach((item, index)=>{
+    const price = parseInt(item.price.replace(/\D/g,""));
+    subtotal += price * item.qty;
+
+    const div = document.createElement("div");
+    div.style.marginBottom="15px";
+    div.innerHTML = `
+      <strong>${item.name}</strong><br>
+      ₹${price} x ${item.qty}
+      <button onclick="removeItem(${index})">Remove</button>
+    `;
+    cartDrawer.appendChild(div);
+  });
+
+  const tax = subtotal * 0.18;
+  const total = subtotal + tax;
+
+  cartDrawer.innerHTML += `
+    <hr>
+    <p>Subtotal: ₹${subtotal}</p>
+    <p>Tax (18%): ₹${tax.toFixed(2)}</p>
+    <h3>Total: ₹${total.toFixed(2)}</h3>
+    <button onclick="placeOrder()">Checkout</button>
+    <button onclick="clearCart()">Clear Cart</button>
+  `;
+}
+
+function openCart(){
+  renderCartDrawer();
+  cartDrawer.style.right="0";
+}
+function closeCart(){
+  cartDrawer.style.right="-400px";
+}
+document.querySelector(".fa-shopping-bag")?.parentElement.addEventListener("click",(e)=>{
+  e.preventDefault();
+  openCart();
+});
+cartDrawer.addEventListener("mouseleave",closeCart);
+
+function removeItem(index){
+  cart.splice(index,1);
+  localStorage.setItem("cart",JSON.stringify(cart));
+  renderCartDrawer();
+  updateCartCount();
+}
+function clearCart(){
+  cart=[];
+  localStorage.removeItem("cart");
+  renderCartDrawer();
+  updateCartCount();
+}
+
+
+// =============================
+// ORDER HISTORY + INVOICE
+// =============================
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+function placeOrder(){
+  if(cart.length===0) return showToast("Cart Empty");
+
+  const order={
+    id:"ORD"+Date.now(),
+    items:cart,
+    date:new Date().toLocaleString()
+  };
+
+  orders.push(order);
+  localStorage.setItem("orders",JSON.stringify(orders));
+
+  generateInvoice(order);
+
+  cart=[];
+  localStorage.removeItem("cart");
+  updateCartCount();
+  closeCart();
+}
+
+function generateInvoice(order){
+  const invoice=document.createElement("div");
+  invoice.style.cssText="position:fixed;inset:0;background:white;padding:30px;overflow:auto;z-index:999999";
+
+  let html=`<h1>Invoice</h1><p>Order ID: ${order.id}</p><p>Date: ${order.date}</p><hr>`;
+  order.items.forEach(i=>{
+    html+=`<p>${i.name} - ${i.price} x ${i.qty}</p>`;
+  });
+  html+="<hr><button onclick='this.parentElement.remove()'>Close</button>";
+
+  invoice.innerHTML=html;
+  document.body.appendChild(invoice);
+}
+
+
+// =============================
+// CLICKABLE STAR RATING
+// =============================
+document.querySelectorAll(".star").forEach(starContainer=>{
+  const stars=starContainer.querySelectorAll("i");
+  stars.forEach((star,index)=>{
+    star.style.cursor="pointer";
+    star.onclick=()=>{
+      stars.forEach((s,i)=>{
+        s.style.color = i<=index ? "gold" : "#ccc";
+      });
+    };
+  });
+});
+
+
+// =============================
+// PRODUCT REVIEWS
+// =============================
+document.querySelectorAll(".pro").forEach(card=>{
+  const reviewBtn=document.createElement("button");
+  reviewBtn.innerText="Add Review";
+  card.appendChild(reviewBtn);
+
+  reviewBtn.onclick=(e)=>{
+    e.stopPropagation();
+    const text=prompt("Write your review");
+    if(!text) return;
+
+    const p=document.createElement("p");
+    p.innerText="📝 "+text;
+    p.style.fontSize="12px";
+    card.appendChild(p);
+  };
+});
+
+
+// =============================
+// SALE COUNTDOWN TIMER
+// =============================
+const countdown=document.createElement("div");
+countdown.style.cssText="position:fixed;top:10px;left:10px;background:red;color:white;padding:8px 12px;border-radius:6px;z-index:9999";
+document.body.appendChild(countdown);
+
+let saleTime=3600;
+setInterval(()=>{
+  saleTime--;
+  const m=Math.floor(saleTime/60);
+  const s=saleTime%60;
+  countdown.innerText=`Sale Ends In ${m}:${s<10?"0"+s:s}`;
+},1000);
+
+
+// =============================
+// STOCK SYSTEM
+// =============================
+document.querySelectorAll(".pro").forEach(card=>{
+  let stock=Math.floor(Math.random()*10+1);
+  const stockTag=document.createElement("p");
+  stockTag.style.color="red";
+  stockTag.innerText="Stock Left: "+stock;
+  card.appendChild(stockTag);
+
+  card.querySelector(".cart").onclick=(e)=>{
+    e.preventDefault();
+    if(stock<=0) return showToast("Out of Stock ❌");
+    stock--;
+    stockTag.innerText="Stock Left: "+stock;
+  };
+});
+
+
+// =============================
+// USER ANALYTICS LOG
+// =============================
+document.addEventListener("click",(e)=>{
+  console.log("User Clicked:",e.target.tagName);
+});
+
+
+// =============================
+// THEME MEMORY
+// =============================
+if(localStorage.getItem("darkMode")==="true"){
+  document.body.classList.add("dark");
+}
+document.body.addEventListener("click",()=>{
+  localStorage.setItem("darkMode",
+    document.body.classList.contains("dark"));
+});
+
+
+// =============================
+// SESSION TIMER
+// =============================
+let sessionTime=0;
+setInterval(()=>{ sessionTime++; },1000);
+
+
+// =============================
+// PAGE VISIT COUNTER
+// =============================
+let visits=parseInt(localStorage.getItem("visits")||0);
+visits++;
+localStorage.setItem("visits",visits);
+console.log("Total Visits:",visits);
+
+
+// =============================
+// MOUSE TRAIL EFFECT
+// =============================
+document.addEventListener("mousemove",(e)=>{
+  const dot=document.createElement("div");
+  dot.style.cssText=`
+  position:fixed;
+  width:6px;height:6px;
+  background:#088178;
+  border-radius:50%;
+  top:${e.clientY}px;
+  left:${e.clientX}px;
+  pointer-events:none;
+  `;
+  document.body.appendChild(dot);
+  setTimeout(()=>dot.remove(),300);
+});
+
+
+// =============================
+// FPS PERFORMANCE TRACKER
+// =============================
+let lastTime=performance.now();
+function trackFPS(){
+  const now=performance.now();
+  const fps=Math.round(1000/(now-lastTime));
+  lastTime=now;
+  requestAnimationFrame(trackFPS);
+}
+trackFPS();
+
+
+console.log("🔥 ULTRA FINAL SYSTEM LOADED SUCCESSFULLY 🔥");
