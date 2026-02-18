@@ -28,19 +28,8 @@
 
 ## 🖼️ Screenshots
 
-### Home Page
+<img width="1875" height="803" alt="image" src="https://github.com/user-attachments/assets/d55d2e4e-c670-412c-8270-46571a00aa3e" />
 
-![Home](./1.png)
-
-### Products Section
-
-![Products](./2.png)
-
-### Shopping Experience
-
-![Shop](./3.png)
-
----
 
 ## 🛠️ Tech Stack
 
