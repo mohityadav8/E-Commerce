@@ -263,3 +263,207 @@ updateCartCount();
 showToast("Order Placed Successfully 🎉");
 }, 1500);
 };
+
+// ============================================================
+// 🔥 EXTRA ADVANCED FEATURES — ADD BELOW YOUR CURRENT CODE
+// ============================================================
+
+// =============================
+// SCROLL PROGRESS BAR
+// =============================
+const progress = document.createElement("div");
+progress.style.cssText = `position:fixed;
+top:0;
+left:0;
+height:4px;
+width:0%;
+background:#088178;
+z-index:99999;`;
+document.body.appendChild(progress);
+
+window.addEventListener("scroll", () => {
+const totalHeight = document.body.scrollHeight - window.innerHeight;
+const progressHeight = (window.scrollY / totalHeight) * 100;
+progress.style.width = progressHeight + "%";
+});
+
+// =============================
+// LIVE PRODUCT SEARCH
+// =============================
+const searchBox = document.createElement("input");
+searchBox.placeholder = "🔍 Search products...";
+searchBox.style.cssText = `position:fixed;
+top:90px;
+right:20px;
+padding:10px 15px;
+border-radius:25px;
+border:1px solid #ccc;
+z-index:9999;`;
+document.body.appendChild(searchBox);
+
+searchBox.addEventListener("keyup", () => {
+const val = searchBox.value.toLowerCase();
+document.querySelectorAll(".pro").forEach((product) => {
+const name = product.innerText.toLowerCase();
+product.style.display = name.includes(val) ? "block" : "none";
+});
+});
+
+// =============================
+// SORT PRODUCTS BY PRICE
+// =============================
+const sortBtn = document.createElement("button");
+sortBtn.innerText = "Sort ₹";
+sortBtn.style.cssText = `position:fixed;
+top:140px;
+right:20px;
+padding:10px 15px;
+background:#088178;
+color:white;
+border:none;
+border-radius:20px;
+z-index:9999;`;
+document.body.appendChild(sortBtn);
+
+let asc = true;
+sortBtn.onclick = () => {
+const container = document.querySelector(".pro-container");
+const items = Array.from(container.children);
+
+items.sort((a, b) => {
+const priceA = parseInt(a.querySelector("h4").innerText.replace(/\D/g,""));
+const priceB = parseInt(b.querySelector("h4").innerText.replace(/\D/g,""));
+return asc ? priceA - priceB : priceB - priceA;
+});
+
+asc = !asc;
+items.forEach(el => container.appendChild(el));
+};
+
+// =============================
+// ❤️ WISHLIST SYSTEM
+// =============================
+let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+document.querySelectorAll(".pro").forEach((card) => {
+const heart = document.createElement("span");
+heart.innerHTML = "❤";
+heart.style.cssText = `   position:absolute;
+  top:10px;
+  left:10px;
+  color:white;
+  font-size:20px;
+  cursor:pointer;
+  text-shadow:0 0 5px black;
+  `;
+card.appendChild(heart);
+
+heart.onclick = (e) => {
+e.stopPropagation();
+const name = card.querySelector("h5").innerText;
+
+```
+if (wishlist.includes(name)) {
+  wishlist = wishlist.filter(p => p !== name);
+  heart.style.color = "white";
+} else {
+  wishlist.push(name);
+  heart.style.color = "red";
+}
+
+localStorage.setItem("wishlist", JSON.stringify(wishlist));
+```
+
+};
+});
+
+// =============================
+// COUPON SYSTEM
+// =============================
+const couponBtn = document.createElement("button");
+couponBtn.innerText = "Apply Coupon";
+couponBtn.style.cssText = `position:fixed;
+bottom:80px;
+right:20px;
+padding:10px 15px;
+background:black;
+color:white;
+border:none;
+border-radius:20px;
+z-index:9999;`;
+document.body.appendChild(couponBtn);
+
+couponBtn.onclick = () => {
+const code = prompt("Enter Coupon Code");
+
+if (code === "MOHIT50") showToast("50% Discount Applied 🎉");
+else if (code === "WELCOME10") showToast("10% Discount Applied 🎉");
+else showToast("Invalid Coupon ❌");
+};
+
+// =============================
+// ESTIMATED DELIVERY DATE
+// =============================
+function deliveryDate() {
+const date = new Date();
+date.setDate(date.getDate() + Math.floor(Math.random() * 5 + 3));
+return date.toDateString();
+}
+
+document.querySelectorAll(".pro").forEach(card => {
+const d = document.createElement("p");
+d.style.fontSize = "11px";
+d.style.color = "gray";
+d.innerText = "Delivery by: " + deliveryDate();
+card.appendChild(d);
+});
+
+// =============================
+// AUTO HERO TEXT SLIDER
+// =============================
+const heroTexts = [
+"Super Deals Today 🔥",
+"Limited Time Offer ⏰",
+"New Collection Arrived 👕",
+"Flat 70% OFF 💸"
+];
+
+let i = 0;
+setInterval(() => {
+const hero = document.querySelector("#hero h2");
+if(hero){
+hero.innerText = heroTexts[i];
+i = (i + 1) % heroTexts.length;
+}
+}, 2500);
+
+// =============================
+// KEYBOARD SHORTCUTS (PRO LEVEL)
+// =============================
+document.addEventListener("keydown", (e) => {
+if (e.key === "/") searchBox.focus();
+if (e.key === "c") showToast("Cart Shortcut Pressed 🛒");
+if (e.key === "d") document.body.classList.toggle("dark");
+});
+
+// =============================
+// HIGHLIGHT NEW PRODUCTS
+// =============================
+document.querySelectorAll(".pro").forEach((card, index) => {
+if(index < 2){
+const tag = document.createElement("span");
+tag.innerText = "NEW";
+tag.style.cssText = `     position:absolute;
+    top:10px;
+    right:10px;
+    background:red;
+    color:white;
+    padding:3px 6px;
+    font-size:10px;
+    border-radius:4px;
+    `;
+card.appendChild(tag);
+}
+});
+
+console.log("🚀 Extra features loaded successfully!");
